@@ -12,5 +12,3 @@ DATABASES = {
         "OPTIONS": {"charset": "utf8mb4"},
     }
 }
-ALGORITHM = os.environ.get('ALGORITHM')
-SECRET_KEY = os.environ.get('SECRET_KEY')

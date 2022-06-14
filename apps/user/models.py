@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
         help_text='EMAIL ID.'
     )
-    nickname = models.CharField(_('nickname'), max_length=15, null=False, blank=False, default=username)
+    nickname = models.CharField(_('nickname'), max_length=20, null=False, blank=False)
     profile_image = models.ImageField(_('profile_image'), max_length=1000, null=False, blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
