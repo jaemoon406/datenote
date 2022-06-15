@@ -23,7 +23,8 @@ class UserManager(BaseUserManager):
             raise ValueError('The given username must be set')
         if not password:
             raise ValueError('The given password must be set')
-        email = self.normalize_email(email)
+
+        email = BaseUserManager.normalize_email(email)
         user = self.model(
             username=username,
             email=email,
@@ -32,7 +33,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
     def create_superuser(self, username, password, **extra_fields):
@@ -48,18 +49,15 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """
-    customized User
-    """
     username = models.CharField(max_length=20, unique=True)
     email = models.EmailField(
-        verbose_name=_('email id'),
+        verbose_name=_('email'),
         max_length=64,
         unique=True,
-        help_text='EMAIL ID.'
+        help_text='EMAIL.'
     )
     nickname = models.CharField(_('nickname'), max_length=20, null=False, blank=False)
-    profile_image = models.ImageField(_('profile_image'), max_length=1000, null=False, blank=True)
+    profile_image = models.ImageField(_('profile_image'), max_length=1000, null=True, blank=True)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,

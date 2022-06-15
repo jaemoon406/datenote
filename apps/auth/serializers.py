@@ -33,10 +33,11 @@ class SignInSerializer(serializers.ModelSerializer):
         user.check_password(data['password'])
 
 
-class UserSerializer(serializers.Serializer):
-    model = User
-    fields = ['id', 'username', 'nickname', 'profile_image', 'last_active', 'email', 'date_joined']
-
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'nickname', 'profile_image', 'email', 'date_joined']
+        # fields = '__all__'
 # def post(self, data):
 #     user = User.objects.get(username=data['username'])
 #     user.check_password(data['password'])
