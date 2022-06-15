@@ -1,26 +1,12 @@
-from django.shortcuts import render
+from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.decorators import login_required
+
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
+from rest_framework.viewsets import ReadOnlyModelViewSet, ViewSet
+from rest_framework.permissions import AllowAny, BasePermission
 from rest_framework.response import Response
-from apps.user.serializers import SignUpSerializer, UserSerializer
+from rest_framework.decorators import action
 
-
-# class UserControl(APIView):
-#     def post(self, request):
-#         data = request.data
-#         UserManager.create_user(
-#             self,
-#             email=data.get('email'),
-#             username=data.get('username'),
-#             password=data.get('password')
-#         )
-#
-class SignUp(APIView):
-    def post(self, request):
-        serializer = SignUpSerializer(data=request.data)
-        serializer.is_valid()
-        serializer.save()
-
-
-class SignIn(APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
+User = get_user_model()
