@@ -24,11 +24,13 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
     # 'allauth.socialaccount.providers.kakao',
     # 'allauth.socialaccount.providers.naver',
     'apps.user',
+    'apps.book',
+    'apps.storage',
     # 'score',
-    # 'storage',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +72,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',  # 관리자만 접근 가능
         'rest_framework.permissions.AllowAny',  # 누구나 접근 가능
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -92,11 +97,6 @@ SIMPLE_JWT = {
 
     'ALGORITHM': ALGORITHM,
     'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-    'JWK_URL': None,
-    'LEEWAY': 0,
 
     'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),
 }
@@ -130,12 +130,6 @@ USE_I18N = True
 
 USE_TZ = False
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
-
 STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
