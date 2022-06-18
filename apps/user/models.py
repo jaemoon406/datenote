@@ -19,8 +19,10 @@ class UserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=email,
+            nickname=username,
             **extra_fields
         )
+
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         user.set_password(password)
@@ -63,7 +65,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-    last_login = models.DateTimeField(_("date last work"), null=True, blank=True)
+    last_login = models.DateTimeField(_("date last work"), null=True)
 
     objects = UserManager()
 
