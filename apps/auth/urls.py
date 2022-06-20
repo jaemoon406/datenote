@@ -14,7 +14,7 @@ router = DefaultRouter()
 urlpatterns = [
     # path('', include(router.urls)),
     path('signup/', SignUp.as_view(), name='signup'),
-    path('signin/', SignIn.as_view()),
+    path('signin/', SignIn.as_view(), name='signin'),
     # path('signin/', TokenObtainPairView.as_view(), name='signin'),
     path('token/obtain/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
