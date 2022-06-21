@@ -1,18 +1,18 @@
 import django.db.utils
 from django.contrib.auth import get_user_model, authenticate, login
 from django.http.response import JsonResponse
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework import status
+
 
 from apps.util.json_response import json_success, json_error
-
-from apps.user.serializers import UserDetailSerializer
 from apps.auth.serializers import SignUpSerializer
+from apps.user.serializers import UserDetailSerializer
 from apps.user.models import UserManager
 
 User = get_user_model()
@@ -56,10 +56,14 @@ class SignIn(APIView):
             data = request.data
             username = data.get('username')
             password = data.get('password')
+            # user = login(request, username=username, password=password)
             user = authenticate(request, username=username, password=password)
+            print(user)
             refresh = RefreshToken.for_user(user)
-            user = User.objects.filter(username=username)
-            user_dic = user.values()[0]
+
+            user_queryset = User.objects.filter(username=username)
+            print(user,type(user))
+            user_dic = user_queryset.values()[0]
             serializer = UserDetailSerializer(data=user_dic)
             serializer.is_valid()
             token = {

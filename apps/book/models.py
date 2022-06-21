@@ -8,7 +8,7 @@ User = get_user_model()
 class Book(TimeStampedModel):
     # 추억이 담긴 책을 만들어 보세요.
     name = models.CharField(max_length=25, verbose_name='그룹 이름', null=False)
-    user = models.ManyToManyField(User, verbose_name='멤버')
+    user = models.ManyToManyField(to=User, db_table='UserGroup', verbose_name='멤버')
     description = models.CharField(max_length=125, verbose_name='그룹 설명', null=True)
     password = models.CharField(max_length=255, null=True, blank=True)
     is_public = models.BooleanField(default=0)

@@ -3,12 +3,15 @@ from rest_framework.views import APIView
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, BasePermission
+from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 
 
 class APIRootView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
+        user = self.request.user
+        print(user)
+        # print(request.headers)
         # year = now().year
         path = '127.0.0.1:8000'
         data = {
