@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 
 
 class APIRootView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     def get(self, request):
         user = self.request.user
         print(user)
