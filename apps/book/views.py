@@ -27,9 +27,21 @@ class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
+    def list(self, request, *args, **kwargs):
+        queryset = Book.objects.filter(is_public=False)
+        serializer = BookSerializer(queryset, many=True)
+        return serializer.data
+
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = get_object_or_404(self.queryset, many=True)
+    #     serializer = self.get_serializer(instance)
+    #     return serializer.data
+
     def create(self, request, *args, **kwargs):
         BookSerializer.create(self, request=request.data)
         return Response(json_success("S0001", ""), status=status.HTTP_201_CREATED)
+
+    # def update(self, request, *args, **kwargs):
 
 
 

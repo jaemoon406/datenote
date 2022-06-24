@@ -15,16 +15,6 @@ class BookSerializer(serializers.ModelSerializer):
     def get_view_name(self):
         return
 
-    def list(self, request, *args, **kwargs):
-        queryset = Book.objects.filter(is_public=False)
-        serializer = BookSerializer(queryset, many=True)
-        return serializer.data
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = get_object_or_404(self.queryset, many=True)
-        serializer = self.get_serializer(instance)
-        return serializer.data
-
     def create(self, request, *args, **kwargs):
         users = request.pop('users')
         book = Book.objects.create(
@@ -36,7 +26,9 @@ class BookSerializer(serializers.ModelSerializer):
         for user_id in users:
             book.user.add(user_id['id'])
 
-        return book.user
+        # return Response(json_success("S0001", ""), status=status.HTTP_201_CREATED)
+        # return book.user
+
 
     class Meta:
         model = Book
