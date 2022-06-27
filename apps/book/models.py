@@ -8,6 +8,7 @@ User = get_user_model()
 class Book(TimeStampedModel):
     # 추억이 담긴 책을 만들어 보세요.
     name = models.CharField(max_length=25, verbose_name='그룹 이름', null=False)
+    owner = models.ForeignKey(User, verbose_name='책 주인', on_delete=models.DO_NOTHING)
     description = models.CharField(max_length=125, verbose_name='그룹 설명', null=True)
     password = models.CharField(max_length=255, null=True, blank=True)
     is_public = models.BooleanField(default=0)
@@ -40,7 +41,6 @@ class Comment(TimeStampedModel):
 
 
 class BookMember(TimeStampedModel):
-    owner = models.BooleanField(default=0, verbose_name='책 주인')
     user = models.ForeignKey('user.User', verbose_name='구성원', on_delete=models.DO_NOTHING, null=False)
     book = models.ForeignKey('Book', verbose_name='책', on_delete=models.CASCADE, null=False)
 

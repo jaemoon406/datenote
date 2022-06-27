@@ -17,8 +17,10 @@ from apps.util.json_response import *
 
 User = get_user_model()
 
+
 class ListPagination(PageNumberPagination):
     page_size = 5
+
 
 class Board(ViewSet):
     def get_view_name(self):
@@ -46,7 +48,6 @@ class BookViewSet(ModelViewSet):
         return serializer.data
 
     def create(self, request, *args, **kwargs):
-        BookSerializer.create(self, request=request.data)
+        request.data['owner'] = request.user
+        BookSerializer.create(self, validated_data=request.data)
         return Response(json_success("S0001", ""), status=status.HTTP_201_CREATED)
-
-    # def update(self, request, *args, **kwargs):
