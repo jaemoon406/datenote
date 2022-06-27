@@ -8,7 +8,6 @@ User = get_user_model()
 class Book(TimeStampedModel):
     # 추억이 담긴 책을 만들어 보세요.
     name = models.CharField(max_length=25, verbose_name='그룹 이름', null=False)
-    user = models.ManyToManyField(to=User, db_table='UserGroup', verbose_name='멤버')
     description = models.CharField(max_length=125, verbose_name='그룹 설명', null=True)
     password = models.CharField(max_length=255, null=True, blank=True)
     is_public = models.BooleanField(default=0)
@@ -18,9 +17,9 @@ class Book(TimeStampedModel):
 
 
 class Board(TimeStampedModel):
-    user = models.ForeignKey(User, verbose_name='게시물 등록 멤버', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='게시물 멤버', on_delete=models.CASCADE)
     book = models.ForeignKey('Book', verbose_name='책', on_delete=models.CASCADE)
-    description = models.CharField(max_length=255,null=True,blank=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=12, verbose_name='게시물 제목', null=True)
     data = models.DateTimeField(verbose_name='추억 날짜')
     locate = models.CharField(max_length=50, null=True, blank=True)
@@ -38,3 +37,18 @@ class Comment(TimeStampedModel):
 
     class Meta:
         db_table = 'comments'
+
+
+class BookMember(TimeStampedModel):
+    owner = models.BooleanField(default=0, verbose_name='책 주인')
+    user = models.ForeignKey('user.User', verbose_name='구성원', on_delete=models.DO_NOTHING, null=False)
+    book = models.ForeignKey('Book', verbose_name='책', on_delete=models.CASCADE, null=False)
+
+    class Meta:
+        db_table = 'book_member'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'book'],
+                name='unique book member',
+            ),
+        ]

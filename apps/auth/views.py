@@ -31,7 +31,6 @@ class SignUp(APIView):
             username = data.get('username')
             UserManager.create_user(self, username=username, email=data.get('email'),
                                     password=data.get('password'))
-
             return JsonResponse(json_success('S0009', None), status=status.HTTP_201_CREATED)
 
         except django.db.utils.IntegrityError as e:

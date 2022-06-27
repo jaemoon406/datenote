@@ -25,9 +25,9 @@ class BookSerializer(serializers.ModelSerializer):
         )
         for user_id in users:
             book.user.add(user_id['id'])
+        return book.user
 
         # return Response(json_success("S0001", ""), status=status.HTTP_201_CREATED)
-        # return book.user
 
 
     class Meta:
