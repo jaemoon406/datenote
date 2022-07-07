@@ -41,7 +41,7 @@ class Comment(TimeStampedModel):
 
 
 class BookMember(TimeStampedModel):
-    user = models.ForeignKey('user.User', verbose_name='구성원', on_delete=models.DO_NOTHING, null=False)
+    user = models.ForeignKey(User, verbose_name='구성원', on_delete=models.DO_NOTHING, null=False)
     book = models.ForeignKey('Book', verbose_name='책', on_delete=models.CASCADE, null=False)
 
     class Meta:

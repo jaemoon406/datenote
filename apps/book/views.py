@@ -39,7 +39,7 @@ class BookViewSet(ModelViewSet):
         queryset = Book.objects.filter(is_public=False)
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = BookListSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
