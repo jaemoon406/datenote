@@ -20,4 +20,4 @@ class TestSignUp(unittest.TestCase):
             "email": "test1@test.test"
         }
         response = c.post(path='v1/account/signup/', data=signup_data, HTTP_ACCEPT='application/json', )
-        self.assertEqual()
+        self.assertEqual('')
