@@ -42,12 +42,14 @@ class BookViewSet(ModelViewSet):
             serializer = BookListSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = get_object_or_404(self.queryset, many=True)
+    def retrieve(self, request, pk, *args, **kwargs):
+        print(pk)
+        instance = Book.objects.get(id=pk)
+        # instance = get_object_or_404(queryset, many=True)
         serializer = self.get_serializer(instance)
         return serializer.data
 
     def create(self, request, *args, **kwargs):
-        request.data['owner'] = request.user
+        # request.data['owner'] = request.user
         BookSerializer.create(self, validated_data=request.data)
         return Response(json_success("S0001", ""), status=status.HTTP_201_CREATED)

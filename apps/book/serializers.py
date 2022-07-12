@@ -11,8 +11,10 @@ User = get_user_model()
 
 
 class BookSerializer(serializers.ModelSerializer):
-    user = UserDetailSerializer(read_only=True, many=True, required=False)  # ManyToMany
-    owner = UserDetailSerializer(read_only=True, many=True, required=False)  # ManyToMany
+    # user = UserDetailSerializer(read_only=True, many=True, required=False)  # ManyToMany
+    # owner = UserDetailSerializer(read_only=True, many=True)  # ManyToMany
+
+    # owner = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     def get_view_name(self):
         return
@@ -24,11 +26,10 @@ class BookSerializer(serializers.ModelSerializer):
             BookMember.objects.create(book_id=book.id, user_id=user_id['id'])
         return book
 
-
     class Meta:
         model = Book
         fields = '__all__'
-        depth = 1
+        # depth = 1
 
 
 class BookListSerializer(serializers.ModelSerializer):
