@@ -1,3 +1,7 @@
+import time
+import functools
+from django.db import connection, reset_queries
+
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from django.utils.timezone import now
@@ -5,6 +9,22 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 
+def query_debugger(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        reset_queries()
+        number_of_start_queries = len(connection.queries)
+        start  = time.perf_counter()
+        result = func(*args, **kwargs)
+        end    = time.perf_counter()
+        number_of_end_queries = len(connection.queries)
+        print("-------------------------------------------------------------------")
+        print(f"Function : {func.__name__}")
+        print(f"Number of Queries : {number_of_end_queries-number_of_start_queries}")
+        print(f"Finished in : {(end - start):.2f}s")
+        print("-------------------------------------------------------------------")
+        return result
+    return wrapper
 
 class APIRootView(APIView):
     permission_classes = [AllowAny]
