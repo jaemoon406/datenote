@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError, transaction, DatabaseError
 
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
@@ -10,35 +11,13 @@ from django.shortcuts import get_object_or_404
 User = get_user_model()
 
 
-class BookSerializer(serializers.ModelSerializer):
-    # user = UserDetailSerializer(read_only=True, many=True, required=False)  # ManyToMany
-    # owner = UserDetailSerializer(read_only=True, many=True)  # ManyToMany
-
-    # owner = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    def get_view_name(self):
-        return
-
-    def create(self, validated_data):
-        users = validated_data.pop('users')
-        book = Book.objects.create(**validated_data)
-        for user_id in users:
-            BookMember.objects.create(book_id=book.id, user_id=user_id['id'])
-        return book
-
-    class Meta:
-        model = Book
-        fields = '__all__'
-        # depth = 1
-
-
 class BookListSerializer(serializers.ModelSerializer):
     # user = serializers.PrimaryKeyRelatedField(read_only=True, many=True, allow_empty=False)  # ManyToMany
-    user = UserDetailSerializer(read_only=True, many=True)  # ManyToMany
+    member = UserDetailSerializer(read_only=True, many=True)  # ManyToMany
 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'description', 'is_public', 'user', 'created', 'modified']
+        fields = ['id', 'name', 'description', 'is_public', 'member', 'created', 'modified']
 
 
 class BoardRetrieveSerializer(serializers.ModelSerializer):
@@ -49,3 +28,40 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
         model = Board
         fields = '__all__'
         read_only_fields = ('id',)
+
+
+class BookMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookMember
+        fields = '__all__'
+
+
+class BookOwnerSerializer(serializers.ModelSerializer):
+    bookmember = BookMemberSerializer(BookMember.objects.filter(owner=True))
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+class BookSerializer(serializers.ModelSerializer):
+    member = UserDetailSerializer(many=True, required=False)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        with transaction.atomic():
+            owner = validated_data.pop('owner')
+            password = validated_data['password']
+
+
+
+            validated_data['password'] = '4567'
+            book = Book.objects.create(**validated_data)
+            BookMember.objects.create(book_id=book.id, user_id=owner.id, owner=1)
+
+        return book
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'description', 'is_public', 'member', 'created', 'modified']
+        # fields = '__all__'

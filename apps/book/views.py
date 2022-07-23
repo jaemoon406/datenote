@@ -12,7 +12,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import PageNumberPagination
 
 from .serializers import BookListSerializer, BookSerializer
-from apps.book.models import Book
+from apps.book.models import Book, BookMember
 from apps.util.json_response import *
 
 User = get_user_model()
@@ -36,20 +36,22 @@ class BookViewSet(ModelViewSet):
     pagination_class = ListPagination
 
     def list(self, request, *args, **kwargs):
-        queryset = Book.objects.filter(is_public=False)
+        queryset = self.get_queryset()
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = BookListSerializer(page, many=True)
+            serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
     def retrieve(self, request, pk, *args, **kwargs):
-        print(pk)
-        instance = Book.objects.get(id=pk)
-        # instance = get_object_or_404(queryset, many=True)
-        serializer = self.get_serializer(instance)
-        return serializer.data
+        instance = self.get_object()
+        serializer = BookListSerializer(instance)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        # request.data['owner'] = request.user
-        BookSerializer.create(self, validated_data=request.data)
-        return Response(json_success("S0001", ""), status=status.HTTP_201_CREATED)
+        if request.user:
+            request.data['owner'] = request.user
+            BookSerializer.create(self, validated_data=request.data)
+            return Response(json_success('S0001', {"Success"}), status=status.HTTP_201_CREATED)
+        else:
+            return Response(json_error('E0403'), status=status.HTTP_200_OK)
+
