@@ -24,9 +24,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         user.set_password(password)
-        print(user.__dict__)
         user.save()
-        print('1231')
         return user
 
     def create_superuser(self, username, password, **extra_fields):
