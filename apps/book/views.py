@@ -1,8 +1,9 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
+import os
+
+from apps.util.encryption import AESCipher
 from django.contrib.auth import get_user_model
 
-# from rest_framework.decorators import detail_route, list_route
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet, ModelViewSet, ReadOnlyModelViewSet
@@ -16,6 +17,7 @@ from apps.book.models import Book, BookMember
 from apps.util.json_response import *
 
 User = get_user_model()
+aes = AESCipher(key=os.environ.get('PRIVATE_KEY'))
 
 
 class ListPagination(PageNumberPagination):
@@ -49,9 +51,10 @@ class BookViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if request.user:
-            request.data['owner'] = request.user
-            BookSerializer.create(self, validated_data=request.data)
+            data = request.data
+            data['owner'] = request.user
+            data['password'] = aes.encrypt(data['password'])
+            BookSerializer.create(self, validated_data=data)
             return Response(json_success('S0001', {"Success"}), status=status.HTTP_201_CREATED)
         else:
             return Response(json_error('E0403'), status=status.HTTP_200_OK)
-
