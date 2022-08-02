@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 
 
 from apps.util.json_response import json_success, json_error
@@ -72,3 +72,13 @@ class SignIn(APIView):
             return Response(json_success("S0008", {'user': serializer.data, 'token': token}), status=status.HTTP_200_OK)
         except AttributeError:
             return Response(json_error("E0005"), status=status.HTTP_400_BAD_REQUEST)
+
+from random import random
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def issue_auth_code(request):
+    r = []
+    for i in range(6):
+
+        r.append()
