@@ -20,4 +20,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
+
+    path('issue_code/', issue_auth_code, name='create_authentication_code'),
+    path('check_code/', check_auth_code, name='check_authentication_code'),
 ]

@@ -1,5 +1,7 @@
+import random
+
 import django.db.utils
-from django.contrib.auth import get_user_model, authenticate, login
+from django.contrib.auth import get_user_model, authenticate
 from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
@@ -7,13 +9,14 @@ from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.decorators import action, api_view, permission_classes
-
+from rest_framework.decorators import api_view, permission_classes
 
 from apps.util.json_response import json_success, json_error
 from apps.auth.serializers import SignUpSerializer
 from apps.user.serializers import UserDetailSerializer
 from apps.user.models import UserManager
+
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -61,7 +64,7 @@ class SignIn(APIView):
             refresh = RefreshToken.for_user(user)
 
             user_queryset = User.objects.filter(username=username)
-            print(user,type(user))
+            print(user, type(user))
             user_dic = user_queryset.values()[0]
             serializer = UserDetailSerializer(data=user_dic)
             serializer.is_valid()
@@ -73,12 +76,30 @@ class SignIn(APIView):
         except AttributeError:
             return Response(json_error("E0005"), status=status.HTTP_400_BAD_REQUEST)
 
-from random import random
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def issue_auth_code(request):
-    r = []
+    data = request.data
+    phone = data['phone_num']
+    # if cache.get(phone):
+    r = list()
     for i in range(6):
+        r.append(random.randrange(0, 9))
+    number = ''.join(map(str, r))
+    cache.set(phone, number, timeout=180)
+    """
+    Email이나 Phone으로 인증 받아야 함
+    """
+    return Response(json_success("S0001", ["Create"]), status=status.HTTP_201_CREATED)
 
-        r.append()
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def check_auth_code(request):
+    data = request.data
+    phone = data['phone_num']
+    code = data['auth_code']
+    if cache.get(phone) == code:
+        return Response(json_success("S0004", ["OK"]), status=status.HTTP_200_OK)
+    else:
+        return Response(json_error("E0003"), status=status.HTTP_200_OK)

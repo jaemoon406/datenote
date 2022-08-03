@@ -1,11 +1,13 @@
 import os
-import pymysql
 from datetime import timedelta
 from pathlib import Path
+import pymysql
 from dotenv import load_dotenv
+from django.utils.log import DEFAULT_LOGGING
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-pymysql.install_as_MySQLdb()
+
 load_dotenv()
 
 ALLOWED_HOSTS = ['*']
