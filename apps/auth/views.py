@@ -93,6 +93,7 @@ def issue_auth_code(request):
     """
     return Response(json_success("S0001", ["Create"]), status=status.HTTP_201_CREATED)
 
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def check_auth_code(request):
