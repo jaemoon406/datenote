@@ -11,19 +11,15 @@ User = get_user_model()
 class SignUpTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
-
-    #
-    # def tearDown(self):
-    #     User.objects.all().delete()
+        self.url = reverse('signup')
 
     def test_signup_success(self):
-        url = reverse('signup')
         data = {
             "username": "testtest1",
             "password": "dlwoans1",
             "email": "test1@test.test"
         }
-        response = self.client.post(url, json.dumps(data), 'json')
+        response = self.client.post(self.url, json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(response.json(), json_success('S009', None))
+        self.assertEqual(response.json(), json_success('S0009', None))
