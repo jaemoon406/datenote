@@ -29,12 +29,20 @@ class SignUp(APIView):
     def post(self, request):
         try:
             data = request.data
-            serializer = SignUpSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
             username = data.get('username')
             UserManager.create_user(self, username=username, email=data.get('email'),
                                     password=data.get('password'))
             return JsonResponse(json_success('S0009', None), status=status.HTTP_201_CREATED)
+
+        except ValueError as e:
+            if str(e.args).rfind('email') > 0:
+                return JsonResponse(json_error('E0006'), status=status.HTTP_400_BAD_REQUEST)
+            elif str(e.args).rfind('username') > 0:
+                return JsonResponse(json_error('E0005'), status=status.HTTP_400_BAD_REQUEST)
+            elif str(e.args).rfind('password') > 0:
+                return JsonResponse(json_error('E0004'), status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return JsonResponse(json_error('E0400'), status=status.HTTP_400_BAD_REQUEST)
 
         except django.db.utils.IntegrityError as e:
             if str(e.args).rfind('email') > 0:
@@ -43,9 +51,11 @@ class SignUp(APIView):
                 return JsonResponse(json_error('E0008'), status=status.HTTP_400_BAD_REQUEST)
             else:
                 return JsonResponse(json_error('E0400'), status=status.HTTP_400_BAD_REQUEST)
+
         except django.db.utils.DataError as e:
             if str(e.args).rfind('too long') > 0:
                 return JsonResponse(json_error('E0017'), status=status.HTTP_400_BAD_REQUEST)
+
         except KeyError:
             return JsonResponse(json_error('E0002'), status=status.HTTP_400_BAD_REQUEST)
 
