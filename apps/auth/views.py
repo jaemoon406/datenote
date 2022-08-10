@@ -75,7 +75,8 @@ class SignIn(APIView):
             return Response(json_success("S0008", {'user': serializer.data, 'token': token}), status=status.HTTP_200_OK)
         except AttributeError:
             return Response(json_error("E0005"), status=status.HTTP_400_BAD_REQUEST)
-
+        except KeyError:
+            return Response(json_error("E0005"), status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
