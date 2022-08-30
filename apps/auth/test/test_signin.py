@@ -8,71 +8,39 @@ from apps.util.json_response import json_success, json_error
 User = get_user_model()
 
 
-class SignUpTestCase(APITestCase):
+class SignInTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
-        self.url = reverse('signup')
+        self.url = reverse('signin')
         self.content_type = 'application/json'
+        self.user = User.objects.create_user(
+            username='testtest1',
+            email='testuser@test.com',
+            password='dlwoans1'
+        )
 
-        self.post = User(username='testuser1', email='testuser1@test.com')
-        self.post.save()
-    def test_signup_success(self):
+    def test_signin_success(self):
         data = {
             "username": "testtest1",
             "password": "dlwoans1",
-            "email": "test1@test.test"
         }
-        response = self.client.post(self.url, json.dumps(data), content_type=self.content_type)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json(), json_success('S0009', None))
+        response = self.client.post(self.url, json.dumps(data),  content_type=self.content_type)
+        self.assertEqual(response.status_code, 200)
 
-    def test_signup_drop_username_error(self):
+    def test_signin_emtpy_username(self):
         data = {
             "username": "",
             "password": "dlwoans1",
-            "email": "test1@test.test"
         }
-        response = self.client.post(self.url, json.dumps(data), content_type=self.content_type)
+        response = self.client.post(self.url, json.dumps(data),  content_type=self.content_type)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), json_error('E0005'))
 
-    def test_signup_drop_password_error(self):
+    def test_signin_emtpy_password(self):
         data = {
-            "username": "testtest1",
+            "username": "testest1",
             "password": "",
-            "email": "test1@test.test"
         }
-        response = self.client.post(self.url, json.dumps(data), content_type=self.content_type)
+        response = self.client.post(self.url, json.dumps(data),  content_type=self.content_type)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), json_error('E0004'))
-
-    def test_signup_drop_email_error(self):
-        data = {
-            "username": "testtest1",
-            "password": "dlwoans1",
-            "email": ""
-        }
-        response = self.client.post(self.url, json.dumps(data), content_type=self.content_type)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), json_error('E0006'))
-
-    def test_signup_exist_username_error(self):
-        data = {
-            "username": "testuser1",
-            "password": "dlwoans1",
-            "email": "testuser1@test.com"
-        }
-        response = self.client.post(self.url, json.dumps(data), content_type=self.content_type)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), json_error('E0008'))
-
-
-    def test_signup_exist_email_error(self):
-        data = {
-            "username": "testtest1",
-            "password": "dlwoans1",
-            "email": "testuser1@test.com"
-        }
-        response = self.client.post(self.url, json.dumps(data), content_type=self.content_type)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), json_error('E0007'))
+        self.assertEqual(response.json(), json_error('E0005'))
