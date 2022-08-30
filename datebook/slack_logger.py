@@ -1,37 +1,28 @@
-import os
 import json
-import time
 import requests
+import math
+
+from django.utils.timezone import now
 from django.utils.log import AdminEmailHandler
-from copy import copy
+from django.views.debug import ExceptionReporter
 from django.conf import settings
-from pprint import pprint
-from dotenv import load_dotenv
+from datebook.settings import common
 
-load_dotenv()
-
-
+from copy import copy
 # Bot_OAuth_Token = 'xoxb-2271343814839-3816656868517-FNkzLTm3yflIRJzE5mE7l6IB'
+
 class SlackLoggerHandler(AdminEmailHandler):
-    def emit(self, record, *args, **kwargs):
+    def emit(self, record):
         try:
             request = record.request
-            subject = "%s (%s IP): %s" % (
+            subject = '%s (%s IP): %s' % (
                 record.levelname,
-                (
-                    "internal"
-                    if request.META.get("REMOTE_ADDR") in settings.INTERNAL_IPS
-                    else "EXTERNAL"
-                ),
-                record.getMessage(),
-            )
+                ('internal' if request.META.get('REMOTE_ADDR') in settings.INTERNAL_IPS else 'EXTERNAL'),
+                record.getMessage())
         except Exception:
-            subject = "%s: %s" % (record.levelname, record.getMessage())
+            subject = '%s: %s' % (record.levelname, record.getMessage())
             request = None
         subject = self.format_subject(subject)
-
-        # Since we add a nicely formatted traceback on our own, create a copy
-        # of the log record without the exception data.
         no_exc_record = copy(record)
         no_exc_record.exc_info = None
         no_exc_record.exc_text = None
@@ -40,243 +31,108 @@ class SlackLoggerHandler(AdminEmailHandler):
             exc_info = record.exc_info
         else:
             exc_info = (None, record.getMessage(), None)
-
-        reporter = self.reporter_class(request, is_email=True, *exc_info)
-        message = "%s\n\n%s" % (
-            self.format(no_exc_record),
-            reporter.get_traceback_text(),
-        )
+        reporter = ExceptionReporter(request, is_email=True, *exc_info)
+        message = "%s\n\n%s" % (self.format(no_exc_record), reporter.get_traceback_text())
         html_message = reporter.get_traceback_html() if self.include_html else None
-        slack_message_block = {
-            "attachments": [
+
+        # 위 코드는 기본 admin_email handler의 emit
+        slack_channel_name = 'django-test'
+        print(common.SLACK_BOT_TOKEN)
+        slack_token = 'Bearer ' + common.SLACK_BOT_TOKEN
+
+        if request:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'{slack_token}'
+            }
+
+            attachments_blocks = [
                 {
-                    "color": "#f2c744",
-                    "blocks": [
-                        {
-                            "type": "header",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "New request",
-                            }
-                        },
-                        {
-                            "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*Type:*\nPaid Time Off"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*Created by:*\n<example.com|Fred Enriquez>"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*When:*\nAug 10 - Aug 13"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*Type:*\nPaid time off"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "fields": [
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*Hours:*\n16.0 (2 days)"
-                                },
-                                {
-                                    "type": "mrkdwn",
-                                    "text": "*Remaining balance:*\n32.0 hours (4 days)"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": "<https://example.com|View request>"
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-        main_text = 'Error at ' + time.strftime("%A, %d %b %Y %H:%M:%S +0000", time.gmtime())
-        split = 7900
-        parts = range(math.ceil(len(message.encode('utf8')) / split))
-
-        for part in parts:
-            start = 0 if part == 0 else split * part
-            end = split if part == 0 else split * part + split
-
-            # combine final text and prepend it with line breaks
-            # so the details in slack message will fully collapse
-            detail_text = '\r\n\r\n\r\n\r\n\r\n\r\n\r\n' + message[start:end]
-
-            slack_message_block.append({
-                'color': 'danger',
-                'title': 'Details (Part {})'.format(part + 1),
-                'text': detail_text,
-                'ts': time.time(),
-            })
-        channel = 'C027ZA3Q22K'
-        # data = {
-        #     'payload': json.dumps({'main_text': main_text, 'attachments': slack_message_block}),
-        # }
-        # r = requests.post(
-        #     url=slack_chat_url,
-        #     data=data,
-        #     headers={"Authorization": f"{os.environ.get('SLACK_BOT_TOKEN')}"}
-        # )
-        # os.environ.get('SLACK_BOT_TOKEN')
-        main_text = 'Error at ' + time.strftime("%A, %d %b %Y %H:%M:%S +0000", time.gmtime())
-
-        a = {
-            "channel": "C027ZA3Q22K",
-            "attachments": [
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Server Error",
+                    }
+                },
                 {
-                    "mrkdwn_in": ["type"],
-                    "color": "#36a64f",
-                    "pretext": "Optional pre-text that appears above the attachment block",
-                    "author_name": 'askldglkasndgljnasdkjgna',
-                    "author_link": "http://flickr.com/bobby/",
-                    "author_icon": "https://placeimg.com/16/16/people",
-                    "title": "title",
-                    "title_link": "https://api.slack.com/",
-                    "text": "Optional `text` that appears within the attachment",
+                    "type": "section",
                     "fields": [
                         {
-                            "title": "A field's title",
-                            "value": "This field's value",
-                            "short": 'false'
+                            "type": "mrkdwn",
+                            "text": f"*Type :*\n{record.levelname}"
                         },
                         {
-                            "title": "A short field's title",
-                            "value": "A short field's value",
-                            "short": 'true'
-                        },
-                        {
-                            "title": "A second short field's title",
-                            "value": "A second short field's value",
-                            "short": 'true'
+                            "type": "mrkdwn",
+                            "text": f"*Created by :*\n{now()}"
                         }
-                    ],
-                    "thumb_url": "http://placekitten.com/g/200/200",
-                    "footer": "footer",
-                    "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-                    "ts": 123456789
-                }
-            ]
-        }
-        # construct data
-        data = {
-            'payload': json.dumps({
-                'main_text': main_text,
-                'attachments': a}),
-        }
-        data1 = {
-            'payload': json.dumps({
-                "channel": "C027ZA3Q22K",
-                "attachments": [
-                    {
-                        "fallback": "Plain-text summary of the attachment.",
-                        "color": "#2eb886",
-                        "pretext": "Optional text that appears above the attachment block",
-                        "author_name": "Bobby Tables",
-                        "author_link": "http://flickr.com/bobby/",
-                        "author_icon": "http://flickr.com/icons/bobby.jpg",
-                        "title": "Slack API Documentation",
-                        "title_link": "https://api.slack.com/",
-                        "text": "Optional text that appears within the attachment",
-                        "fields": [
-                            {
-                                "title": "Priority",
-                                "value": "High",
-                                "short": 'false'
-                            }
-                        ],
-                        "image_url": "http://my-website.com/path/to/image.jpg",
-                        "thumb_url": "http://example.com/path/to/thumb.png",
-                        "footer": "Slack API",
-                        "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png",
-                        "ts": 123456789
+                    ]
+                },
+                {
+                    "type": "section",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": f"*Path :*\n {request.path if request else 'None'}"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": f"*Method : *\n {request.method if request else 'None'}"
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": f"*Status Code :*\n {record.status_code if request else 'None'}"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": f"*User :*\n {request.user if request else 'None'}"
+                        },
+                    ]
+                },
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": f"Error Code :\n"
                     }
-                ]
-            }),
-        }
-        slack_chat_url = 'https://slack.com/api/chat.postMessage'
+                },
+                {
+                    "type": "divider"
+                },
+            ]
 
-        # send it
-        r = requests.post(slack_chat_url, data=data,
-                          headers={'Authorization': 'Bearer xoxb-2271343814839-3816656868517-FNkzLTm3yflIRJzE5mE7l6IB'})
-        # curl - X
-        # POST - F
-        # channel = C027ZA3Q22K - F
-        # text = "Reminder: we've got a softball game tonight"
-        # https: // slack.com / api / chat.postMessage - H
-        # "Authorization: Bearer xoxb-2271343814839-3816656868517-FNkzLTm3yflIRJzE5mE7l6IB"
+            error_text = record.exc_text.encode('utf8') if record.exc_text else None
+            # 오늘자 slack 최대 글자 수 3001
+            maximum_char = 2500
+            if error_text is None:
+                return None
+            else:
+                for i in range(math.ceil(len(error_text) / maximum_char)):
+                    start = i * maximum_char + i
+                    end = i * maximum_char + maximum_char + i
 
+                    sliced_error_text = error_text[start:end].decode()
+                    error_code = {
+                        'text': {
+                            'text': f'```{sliced_error_text}```',
+                            'type': 'mrkdwn'},
+                        'type': 'section'
+                    }
+                    attachments_blocks.append(error_code)
 
-c = {"blocks": [
-    {
-        "type": "header",
-        "text": {
-            "type": "plain_text",
-            "text": "New request",
-        }
-    },
-    {
-        "type": "section",
-        "fields": [
-            {
-                "type": "mrkdwn",
-                "text": "*Type:*\nPaid Time Off"
-            },
-            {
-                "type": "mrkdwn",
-                "text": "*Created by:*\n<example.com|Fred Enriquez>"
-            }
-        ]
-    },
-    {
-        "type": "section",
-        "fields": [
-            {
-                "type": "mrkdwn",
-                "text": "*When:*\nAug 10 - Aug 13"
-            },
-            {
-                "type": "mrkdwn",
-                "text": "*Type:*\nPaid time off"
-            }
-        ]
-    },
-    {
-        "type": "section",
-        "fields": [
-            {
-                "type": "mrkdwn",
-                "text": "*Hours:*\n16.0 (2 days)"
-            },
-            {
-                "type": "mrkdwn",
-                "text": "*Remaining balance:*\n32.0 hours (4 days)"
-            }
-        ]
-    },
-    {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": "<https://example.com|View request>"
-        }
-    }
-]}
+                attachments_blocks.append({'type': 'divider'})
+                payload = {'attachments': [
+                    {'blocks': attachments_blocks,
+                     'color': '#E54646'}
+                ], 'channel': f'{slack_channel_name}'}
+
+                r = requests.post('https://slack.com/api/chat.postMessage',
+                                  headers=headers,
+                                  data=json.dumps(payload)
+                                  )
+        else:
+            pass

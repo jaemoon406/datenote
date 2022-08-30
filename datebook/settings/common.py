@@ -47,6 +47,7 @@ MIDDLEWARE = [
 
 ALGORITHM = os.environ.get('ALGORITHM')
 SECRET_KEY = os.environ.get('SECRET_KEY')
+SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
 
 ROOT_URLCONF = 'datebook.urls'
 AUTH_USER_MODEL = 'user.User'
