@@ -66,15 +66,13 @@ class SignIn(APIView):
     def post(self, request):
         try:
             data = request.data
-            username = data.get('username')
-            password = data.get('password')
+            username = data['username']
+            password = data['password']
             # user = login(request, username=username, password=password)
             user = authenticate(request, username=username, password=password)
-            print(user)
             refresh = RefreshToken.for_user(user)
 
             user_queryset = User.objects.filter(username=username)
-            print(user, type(user))
             user_dic = user_queryset.values()[0]
             serializer = UserDetailSerializer(data=user_dic)
             serializer.is_valid()
@@ -93,16 +91,15 @@ class SignIn(APIView):
 def issue_auth_code(request):
     data = request.data
     phone = data['phone_num']
-    # if cache.get(phone):
     r = list()
     for i in range(6):
         r.append(random.randrange(0, 9))
     number = ''.join(map(str, r))
-    cache.set(phone, number, timeout=180)
+    cache.set(str(phone), number, timeout=180)
     """
     Email이나 Phone으로 인증 받아야 함
     """
-    return Response(json_success("S0001", ["Create"]), status=status.HTTP_201_CREATED)
+    return Response(json_success("S0001", "Create"), status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])
