@@ -46,7 +46,7 @@ def json_success(code, data):
 def json_error(code):
     error_json = {}
     if code == 'E0001':
-        error_json = json_format('E0001', '고유 키(main-key)값이 올바르지 않습니다.', None)
+        error_json = json_format('E0001', '로그인 실패', None)
         return error_json
     elif code == 'E0002':
         error_json = json_format('E0002', '키(key)값이 올바르지 않습니다.', None)
@@ -55,13 +55,13 @@ def json_error(code):
         error_json = json_format('E0003', '밸류(value)값이 올바르지 않습니다.', None)
         return error_json
     elif code == 'E0004':
-        error_json = json_format('E0004', '헤더(Header)의 인증 키가 올바르지 않습니다.', None)
+        error_json = json_format('E0004', '비밀번호(password)가 입력되지 않았습니다.', None)
         return error_json
     elif code == 'E0005':
-        error_json = json_format('E0005', '로그인 실패', None)
+        error_json = json_format('E0005', '아이디(username)가 입력되지 않았습니다.', None)
         return error_json
     elif code == 'E0006':
-        error_json = json_format('E0006', '메소드(Method)가 올바르지 않습니다.', None)
+        error_json = json_format('E0006', '이메일(email)이 입력되지 않았습니다.', None)
         return error_json
     elif code == 'E0007':
         error_json = json_format('E0007', '중복되는 이메일(email)이 존재합니다.', None)

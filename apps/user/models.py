@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
+from django.db.utils import IntegrityError
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -15,17 +15,33 @@ class UserManager(BaseUserManager):
         if not password:
             raise ValueError('The given password must be set')
         email = BaseUserManager.normalize_email(email)
-        user = self.model(
-            username=username,
-            email=email,
-            nickname=username,
-            **extra_fields
-        )
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        user.set_password(password)
-        user.save()
-        return user
+        # user = self.model(
+        #     username=username,
+        #     email=email,
+        #     nickname=username,
+        #     **extra_fields
+        # )
+        #
+        try:
+            user = User.objects.create(
+                username=username,
+                email=email,
+                nickname=username,
+                **extra_fields
+            )
+            user.set_password(password)
+            extra_fields.setdefault('is_staff', False)
+            extra_fields.setdefault('is_superuser', False)
+            user.save()
+        except Exception:
+            raise
+
+        except IntegrityError:
+            raise IntegrityError
+
+
+        # user.save()
+            return user
 
     def create_superuser(self, username, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)

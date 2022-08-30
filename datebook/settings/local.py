@@ -1,5 +1,5 @@
-
 from datebook.settings.common import *
+
 pymysql.install_as_MySQLdb()
 DEBUG = True
 
