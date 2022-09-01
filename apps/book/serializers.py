@@ -14,7 +14,6 @@ User = get_user_model()
 
 
 class BookListSerializer(serializers.ModelSerializer):
-    # user = serializers.PrimaryKeyRelatedField(read_only=True, many=True, allow_empty=False)  # ManyToMany
     member = UserDetailSerializer(read_only=True, many=True)  # ManyToMany
 
     class Meta:
@@ -23,8 +22,6 @@ class BookListSerializer(serializers.ModelSerializer):
 
 
 class BoardRetrieveSerializer(serializers.ModelSerializer):
-    # user = serializers.  # ManyToOne
-    # comment = serializers.  # OneToMany
 
     class Meta:
         model = Board
@@ -32,18 +29,18 @@ class BoardRetrieveSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
-class BookMemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookMember
-        fields = '__all__'
+# class BookMemberSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = BookMember
+#         fields = '__all__'
 
-
-class BookOwnerSerializer(serializers.ModelSerializer):
-    bookmember = BookMemberSerializer(BookMember.objects.filter(owner=True))
-
-    class Meta:
-        model = User
-        fields = '__all__'
+#
+# class BookOwnerSerializer(serializers.ModelSerializer):
+#     bookmember = BookMemberSerializer(BookMember.objects.filter(owner=True))
+#
+#     class Meta:
+#         model = User
+#         fields = '__all__'
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -61,6 +58,15 @@ class BookSerializer(serializers.ModelSerializer):
             raise ValidationError
         return book
 
+
     class Meta:
         model = Book
         fields = ['id', 'name', 'is_public', 'member', 'created', 'modified']
+
+
+class BookRetrieveSerializer(serializers.ModelSerializer):
+    member = UserDetailSerializer(many=True, required=False)
+
+    class Meta:
+        model = Book
+        fields = ['id', 'name', 'is_public', 'description', 'member', 'created', 'modified']
