@@ -10,7 +10,7 @@ class Book(TimeStampedModel):
     name = models.CharField(max_length=25, verbose_name='그룹 이름', null=False, )
     # owner = models.OneToOneField(User, verbose_name='책 주인', on_delete=models.DO_NOTHING)
     description = models.CharField(max_length=125, verbose_name='그룹 설명', null=True)
-    password = models.CharField(max_length=255, null=True, blank=True)
+    # password = models.CharField(max_length=255, null=True, blank=True)
     is_public = models.BooleanField(default=0)
     member = models.ManyToManyField(User, through='BookMember')
 

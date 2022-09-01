@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction, DatabaseError
+from django.db.utils import DataError
+from rest_framework.exceptions import ValidationError
+
 
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
 from .models import Book, Board, BookMember
 from apps.user.serializers import UserDetailSerializer
-from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -49,19 +51,16 @@ class BookSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        with transaction.atomic():
-            owner = validated_data.pop('owner')
-            password = validated_data['password']
+        try:
+            with transaction.atomic():
+                owner = validated_data.pop('owner')
+                book = Book.objects.create(**validated_data)
+                BookMember.objects.create(book_id=book.id, user_id=owner.id, owner=1)
 
-
-
-            validated_data['password'] = '4567'
-            book = Book.objects.create(**validated_data)
-            BookMember.objects.create(book_id=book.id, user_id=owner.id, owner=1)
-
+        except DataError:
+            raise ValidationError
         return book
 
     class Meta:
         model = Book
-        fields = ['id', 'name', 'description', 'is_public', 'member', 'created', 'modified']
-        # fields = '__all__'
+        fields = ['id', 'name', 'is_public', 'member', 'created', 'modified']
