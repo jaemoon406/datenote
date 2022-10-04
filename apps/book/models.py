@@ -22,8 +22,8 @@ class Board(TimeStampedModel):
     user = models.ForeignKey(User, verbose_name='게시물 멤버', on_delete=models.CASCADE)
     book = models.ForeignKey('Book', verbose_name='책', on_delete=models.CASCADE)
     description = models.CharField(max_length=255, null=True, blank=True)
-    name = models.CharField(max_length=12, verbose_name='게시물 제목', null=True)
-    data = models.DateTimeField(verbose_name='추억 날짜')
+    name = models.CharField(max_length=50, verbose_name='게시물 제목', null=True)
+    date = models.DateTimeField(verbose_name='추억 날짜')
     locate = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
