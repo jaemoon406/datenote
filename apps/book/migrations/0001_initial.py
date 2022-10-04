@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('modified', django_extensions.db.fields.ModificationDateTimeField(auto_now=True, verbose_name='modified')),
                 ('description', models.CharField(blank=True, max_length=255, null=True)),
                 ('name', models.CharField(max_length=12, null=True, verbose_name='게시물 제목')),
-                ('data', models.DateTimeField(verbose_name='추억 날짜')),
+                ('date', models.DateTimeField(verbose_name='추억 날짜')),
                 ('locate', models.CharField(blank=True, max_length=50, null=True)),
             ],
             options={
