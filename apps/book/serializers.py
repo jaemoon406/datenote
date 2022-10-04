@@ -70,3 +70,21 @@ class BookRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'name', 'is_public', 'description', 'member', 'created', 'modified']
+
+
+# ModelSerializer의 속도 저하로 인한 Serializer 사용
+class BoardSerializer(serializers.Serializer):
+    user = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='User'
+    )
+    book = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='Book'
+    )
+    description = serializers.CharField(max_length=255)
+    name = serializers.CharField(max_length=50)
+    date = serializers.DateTimeField()
+    locate = serializers.CharField(max_length=50)
