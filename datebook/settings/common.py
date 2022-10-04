@@ -70,7 +70,7 @@ TEMPLATES = [
 ]
 UPDATE_LAST_LOGIN = True
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'apps.util.paginations.CustomPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # 인증된 사용자만 접근 가능
@@ -128,9 +128,9 @@ PASSWORD_HASHERS = [
 
 SITE_ID = 1
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ko'
 
-TIME_ZONE = 'asia/seoul'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 

@@ -8,11 +8,10 @@ import pprint
 User = get_user_model()
 router = DefaultRouter()
 
-# router.register(r'user', views.UserViewSet, basename='user')
+# router.register(r'members', views.BookMemberViewSet, basename='book-member')
 # pprint.pprint(router.urls)
 
 urlpatterns = [
     # path('', include(router.urls)),
-    # path('signup/', SignUp.as_view(), name='user-control'),
-    # path('signin/', SignIn.as_view()),
+    path('books/<int:pk>/members', BookMemberManager.as_view()),
 ]
