@@ -1,5 +1,6 @@
+import datetime
 import os
-
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
 from rest_framework.decorators import api_view, permission_classes
@@ -7,7 +8,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet, ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly, BasePermission
 from rest_framework.renderers import JSONRenderer
 
 from .serializers import BookListSerializer, BookSerializer, BookRetrieveSerializer
@@ -16,15 +17,16 @@ from apps.book.models import Book, BookMember
 from apps.util.encryption import AESCipher
 from apps.util.json_response import *
 from apps.util.paginations import ListPagination
-from django.shortcuts import get_object_or_404
 from apps.util.permissions import BookMemberCheck, BookOwnerCheck
+from .models import Board
+from apps.storage.models import BoardImage
 
 User = get_user_model()
 aes = AESCipher(key=os.environ.get('PRIVATE_KEY'))
 
 
 class BookViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [BasePermission]
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Book.objects.all().order_by('-created')
     serializer_class = BookSerializer
@@ -65,3 +67,31 @@ class BookViewSet(ModelViewSet):
             return Response(json_error('E0403'), status=status.HTTP_200_OK)
 
 
+class BoardViewSet(APIView):
+    permission_classes = [BasePermission]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    queryset = Book.objects.all().order_by('-created')
+    # serializer_class =
+    renderer_classes = [JSONRenderer]
+    # pagination_class =
+    def list(self, request, *args, **kwargs):
+        # qs =
+        return Response(json_success('S001'))
+
+    def create(self, request, *args, **kwargs):
+        try:
+            board = Board.objects.create(
+                user_id=request.user.id,
+                book_id=kwargs['pk'],
+                description=request.data['description'],
+                name=request.data['name'],
+                date=datetime.strptime(request.data['date'], '%y-%m-%d %H:%M:%S'),
+                locate=request.data['locate']
+            )
+            boardimage = BoardImage.objects.create(
+                board=board,
+                path=request.data['image_path']
+            )
+            return Response()
+        except Exception:
+            return Response()
