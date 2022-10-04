@@ -128,9 +128,9 @@ PASSWORD_HASHERS = [
 
 SITE_ID = 1
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'ko'
 
-TIME_ZONE = 'asia/seoul'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
