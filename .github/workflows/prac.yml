@@ -24,7 +24,7 @@ jobs:
     - name: shell test
       run: |
         touch .env
-        echo echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+        echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
         cat .env
 
     - name: Install Dependencies
