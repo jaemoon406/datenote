@@ -29,9 +29,7 @@ jobs:
 
     - name: SetUp MySQL
       run: |
-        sudo service mysql start
         mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }}
-#        mysql -h 127.0.0.1 --port 3306 -u root -ppassword -e 'CREATE DATABASE IF NOT EXISTS test;'
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
