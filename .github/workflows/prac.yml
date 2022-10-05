@@ -36,11 +36,18 @@ jobs:
         echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
         echo "SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }}" >> .env
         cat .env
-
+    - name: MySQL Connect Verify
+      run: |
+        sudo apt-get install -y mysql-client
+        sudo service mysql start
+        mysql -u root -p root -e "CREATE DATABASE datenote"
+        mysql -u root -p root -e "SHOW DATABASES"
+        
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        
     - name: Run Tests
       run: |
         python manage.py test
