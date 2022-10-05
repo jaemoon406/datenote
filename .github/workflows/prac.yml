@@ -29,9 +29,9 @@ jobs:
 
     - name: SetUp MySQL
       run: |
-        sudo apt-get install -y mysql-client
+        sudo apt-get install --reinstall mysql-server-8.0
         mysql --version
-        sudo service mysql start
+        sudo systemctl enable mysql.service
         mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }}
 
     - name: Set up Python ${{ matrix.python-version }}
