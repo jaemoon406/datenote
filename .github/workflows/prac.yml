@@ -29,6 +29,7 @@ jobs:
 
     - name: SetUp MySQL
       run: |
+        sudo apt-get install -y mysql-client
         mysql --version
         sudo service mysql start
         mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }}
