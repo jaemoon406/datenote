@@ -29,6 +29,8 @@ jobs:
 
     - name: SetUp MySQL
       run: |
+        mysql --version
+        sudo service mysql start
         mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }}
 
     - name: Set up Python ${{ matrix.python-version }}
