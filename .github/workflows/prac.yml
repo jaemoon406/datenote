@@ -20,7 +20,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.DB_NAVE }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
         ports:
             - '3306:3306'
 
