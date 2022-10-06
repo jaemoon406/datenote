@@ -23,16 +23,15 @@ jobs:
           MYSQL_DATABASE: ${{ secrets.DB_NAME }}
         ports:
             - '3306:3306'
-
+            
     steps:
     - uses: actions/checkout@v3
 
     - name: SetUp MySQL
       run: |
-        sudo apt-get install --reinstall mysql-server-8.0
-        mysql --version
-        sudo systemctl enable mysql.service
+        sudo service mysql start
         mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }}
+#        mysql -h 127.0.0.1 --port 3306 -u root -p password -e 'CREATE DATABASE IF NOT EXISTS test;'
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
