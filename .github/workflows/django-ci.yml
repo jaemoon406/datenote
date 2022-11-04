@@ -33,8 +33,9 @@ jobs:
 
     - name: SetUp MySQL
       run: |
-        sudo service mysql start
+        sudo /etc/init.d/mysql start
         mysql -e 'CREATE DATABASE ${{ secrets.DB_NAME }};' -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }}
+#        sudo service mysql start
 #        mysql -h 127.0.0.1 --port 3306 -u root -p password -e 'CREATE DATABASE IF NOT EXISTS test;'
 
     - name: Apply Env Source
