@@ -59,12 +59,13 @@ jobs:
     - name: Run Migrations
       run: python manage.py migrate
       env: 
-        DBENGINE: django.db.backends.mysql
-        DBNAME: ${{ secrets.DB_NAME }}
-        DBUSER: ${{ secrets.DB_USER }}
-        DBPASSWORD: ${{ secrets.DB_PASSWORD }}
-        DBHOST: ${{ secrets.DB_HOST }}
-        DBPORT: ${{ secrets.DB_PORT }}
+        APP_DB_ENGINE: django.db.backends.mysql
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         
 
 #     - name: Apply Env Source
