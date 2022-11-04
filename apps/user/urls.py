@@ -13,5 +13,5 @@ router = DefaultRouter()
 
 urlpatterns = [
     # path('', include(router.urls)),
-    path('books/<int:pk>/members', BookMemberManager.as_view()),
+    # path('books/<int:pk>/members', BookMemberManager.as_view()),
 ]

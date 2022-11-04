@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'apps.book',
     'apps.storage',
     # 'score',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
