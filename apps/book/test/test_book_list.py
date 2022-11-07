@@ -1,9 +1,7 @@
-import json
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase, APIClient
 from apps.book.models import Book
-from apps.util.json_response import json_success, json_error
 
 User = get_user_model()
 

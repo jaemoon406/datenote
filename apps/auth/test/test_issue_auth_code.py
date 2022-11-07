@@ -1,7 +1,7 @@
 import json
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
-from apps.util.json_response import json_success
+from apps.core.handler.response_form.success import json_success
 
 
 class IssueAuthorizationCodeTestCase(APITestCase):

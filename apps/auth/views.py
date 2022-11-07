@@ -1,22 +1,23 @@
 import random
 
 import django.db.utils
-from django.contrib.auth import get_user_model, authenticate
+from django.core.cache import cache
 from django.http.response import JsonResponse
+from django.contrib.auth import get_user_model, authenticate
+
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny, BasePermission
 from rest_framework.decorators import api_view, permission_classes
 
-from apps.util.json_response import json_success, json_error
-from apps.auth.serializers import SignUpSerializer
-from apps.user.serializers import UserDetailSerializer
 from apps.user.models import UserManager
+from apps.user.serializers import UserDetailSerializer
+from apps.core.handler.response_form.error import json_error
+from apps.core.handler.response_form.success import json_success
 
-from django.core.cache import cache
 
 User = get_user_model()
 

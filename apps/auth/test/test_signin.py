@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase, APIClient
 
-from apps.util.json_response import json_success, json_error
+from apps.core.handler.response_form.error import json_error
 
 User = get_user_model()
 
