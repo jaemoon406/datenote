@@ -15,13 +15,13 @@ jobs:
       matrix:
         python-version: [3.9]
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.DB_NAVE }}
-        ports: ['3306:3306']
+#     services:
+#       mysql:
+#         image: mysql:5.7
+#         env:
+#           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#           MYSQL_DATABASE: ${{ secrets.DB_NAVE }}
+#         ports: ['3306:3306']
         
     env:
       SECRET_KEY: 
@@ -50,10 +50,10 @@ jobs:
         pip install -r requirements.txt
       
 #        python -m pip install --upgrade pip
-    - name: SetUp MySQL
-      run: |
-        mysql -e 'CREATE DATABASE ${{ env.DB_NAME }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        sudo /etc/init.d/mysql start
+#     - name: SetUp MySQL
+#       run: |
+#         mysql -e 'CREATE DATABASE ${{ env.DB_NAME }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+#         sudo /etc/init.d/mysql start
         
 #        sudo service mysql start
 #        mysql -h 127.0.0.1 --port 3306 -u root -p password -e 'CREATE DATABASE IF NOT EXISTS test;'
