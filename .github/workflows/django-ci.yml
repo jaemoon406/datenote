@@ -59,8 +59,8 @@ jobs:
     - name: SetUp MySQL
       run: |
         mysql --version
-        mysql -uroot -proot -e "CREATE DATABASE ${{ secrets.DB_NAME }}"
-        mysql -uroot -proot -e "SHOW DATABASES"
+        mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} -e "CREATE DATABASE ${{ secrets.DB_NAME }}"
+        mysql -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }} -e "SHOW DATABASES"
 #     - name: Set up MySQL
 #       run: |
 #         sudo /etc/init.d/mysql start
