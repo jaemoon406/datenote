@@ -57,16 +57,16 @@ jobs:
         
 #        sudo service mysql start
 #        mysql -h 127.0.0.1 --port 3306 -u root -p password -e 'CREATE DATABASE IF NOT EXISTS test;'
-    - name: Run Migrations
-      run: python manage.py migrate
-      env: 
-        APP_DB_ENGINE: django.db.backends.mysql
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_USER: ${{ secrets.DB_USER }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: ${{ secrets.DB_PORT }}
-        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+#     - name: Run Migrations
+#       run: python manage.py migrate
+#       env: 
+#         APP_DB_ENGINE: django.db.backends.mysql
+#         DB_NAME: ${{ secrets.DB_NAME }}
+#         DB_USER: ${{ secrets.DB_USER }}
+#         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+#         DB_HOST: ${{ secrets.DB_HOST }}
+#         DB_PORT: ${{ secrets.DB_PORT }}
+#         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         
 
 #     - name: Apply Env Source
