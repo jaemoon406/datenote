@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django_filters',
     # 'allauth.socialaccount.providers.kakao',
     # 'allauth.socialaccount.providers.naver',
-    'apps.auth',
+    'apps.auths',
     'apps.book',
     # 'apps.score',
     'apps.storage',
