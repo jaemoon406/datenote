@@ -15,7 +15,7 @@ jobs:
       matrix:
         python-version: [3.9]
     services:
-     mysqldb:
+      db:
         image: mysql:latest
         env:
           MYSQL_USER: ${{ secrets.DB_USER }}
@@ -25,7 +25,10 @@ jobs:
         ports:
           - 3306:3306 
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
-        
+      redis:
+        image: redis
+        ports: ['6379:6379']
+        options: --entrypoint redis-server
     env:
       SECRET_KEY: 
         SECRET_KEY:${{ secrets.SECRET_KEY }}
