@@ -60,7 +60,7 @@ jobs:
       run: |
         mysql --version
         sudo apt-get install -y mysql-client
-        sudo service mysql start
+        systemctl mysql start
         mysql -uroot -proot -e "CREATE DATABASE ${{ secrets.DB_NAME }}"
         mysql -uroot -proot -e "SHOW DATABASES"
 #     - name: Set up MySQL
