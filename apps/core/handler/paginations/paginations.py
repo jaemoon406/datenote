@@ -1,8 +1,9 @@
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework.exceptions import APIException
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.response import Response
 
 
 class Success(APIException):
@@ -11,7 +12,17 @@ class Success(APIException):
     default_code = 'ok'
 
 
-class ListPagination(PageNumberPagination):
+class CustomPagination(PageNumberPagination):
+    def get_paginated_response(self, data):
+        return Response({
+            'totalCount': self.page.paginator.count,
+            'countPerPage': len(self.page.object_list),  # offset
+            'currentPage': self.page.number,  # 현재 페이지
+            'results': data,
+        })
+
+
+class ListPagination(CustomPagination):
     page_size = 10
     page_size_query_param = 'page_size'
 
