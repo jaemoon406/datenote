@@ -14,15 +14,3 @@ DATABASES = {
         "OPTIONS": {"charset": "utf8mb4"},
     }
 }
-
-LOGGING = DEFAULT_LOGGING
-LOGGING['handlers']['slack'] = {
-  'level': 'ERROR',
-  'filters': ['require_debug_false'],
-  'class': 'datebook.slack_logger.SlackLoggerHandler',
-}
-
-LOGGING['loggers']['django'] = {
-  'handlers': ['console', 'slack'],
-  'level': 'INFO',
-}

@@ -25,25 +25,3 @@ CACHES = {
 }
 
 
-LOGGING = DEFAULT_LOGGING
-LOGGING['handlers']['slack'] = {
-    'level': 'ERROR',
-    'filters': ['require_debug_false'],
-    'class': 'datebook.slack_logger.SlackLoggerHandler',
-}
-
-LOGGING['loggers']['django'] = {
-    'handlers': ['console', 'slack'],
-    'level': 'INFO',
-}
-
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         }
-#     }
-# }
-
